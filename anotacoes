@@ -53,3 +53,38 @@ Criando um Service
 @Injectable({
   providedIn: 'root' //esta classe pode ser injetada, com "root" qualquer componente independente do modulo pode ter acesso
 })
+
+Construtor em TS / ang
+
+Você pode usar esse atalho no constructor:
+
+ts
+Copiar
+Editar
+constructor(private weatherService: WeatherService) {}
+O private aqui faz duas coisas ao mesmo tempo:
+
+Declara a propriedade weatherService na classe.
+
+Atribui automaticamente o parâmetro recebido à propriedade.
+
+Ou seja, o código acima é equivalente a isso:
+
+ts
+Copiar
+Editar
+class WeatherComponent {
+  private weatherService: WeatherService;
+
+  constructor(weatherService: WeatherService) {
+    this.weatherService = weatherService;
+  }
+}
+✅ Por que isso é útil no Angular?
+Porque o Angular usa injeção de dependência, e esse padrão permite declarar e armazenar serviços em uma única linha de forma limpa e legível.
+
+🔁 Resumo:
+Java	TypeScript / Angular
+Atributo + atribuição manual	this.param = param;
+Verbosidade maior	Mais conciso com private no param
+Sem atalho no construtor	Usa parameter properties
