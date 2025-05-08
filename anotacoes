@@ -23,3 +23,33 @@ Observables
 	- É uma funcionalidade do RxJs que é utilizada pelo Angular
 	- Com ele podemos lidar com transferencia sincrona e assincrona de dados
 Diferente de uma promise, um observable pode ser uma fonta continua de dados, que poderá emitir dados mais de uma vez em diferentes momentos.
+
+
+Arquiteturas PULL e PUSH
+
+- Pull e Push são protocolos que descrevem como um produtor de dados pode-se comunicar com um consumidor de dados
+
+- Na arquitetura PULL o consumidor determina quando recebe os dados do produtor de dados.
+O proprio produtor desconhece quando os dados serão entregues ao consumidor.
+
+- Cada função JavaScript é um sistema PULL, a função é a produtora de dados, e o código que chama a função consome "puxando"um unico valor de retorno da chamada.
+
+- Na arquitetura PUSH, o produtor determina quando enviará dados ao consumidor. Promises são um tipo comum de produtores, como um PUSH, que entrega o valor resolvido aos retornos de chamada registrados (consumidores) a Promise se encarrega com precisão quando esse valor é "empurrado" para os retornos de chamada.
+
+
+Diferenças entre funções, promises e Observable
+
+- Um Observable é produtor de multiplos valores, "empurrando-os" para os consumidores. Pode retornar valores sincronos ou assincronos.
+
+- Uma função espera um unico valor sincrono como resposta, sendo PULL.
+
+- Uma promise é um calculo que pode ou não retornar um unico valor.
+
+- Para se executar um Observable, precisa-se se inscrever, usando .subscribe, pegando o valor do callback e manipulando.
+
+Criando um Service
+
+
+@Injectable({
+  providedIn: 'root' //esta classe pode ser injetada, com "root" qualquer componente independente do modulo pode ter acesso
+})
