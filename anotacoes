@@ -1,0 +1,25 @@
+<!--O <router-outlet> Renderiza seu HTML dentro do <router-outlet>. funciona como um ponto de inserção dinâmica para carregar componentes com base na rota atual do Angular Router. -->
+<!--  <app-wheater-profile></app-wheater-profile>-->
+// Quando você utiliza o app.config.ts, você está definindo configurações globais da aplicação, ou seja, configurações que devem estar disponíveis para toda a aplicação. Isso inclui providers de serviços como:
+
+// provideHttpClient(): Configura o HttpClient para fazer requisições HTTP.
+
+// provideAnimations(): Habilita as animações para toda a aplicação.
+
+// provideRouter(): Configura o roteamento da aplicação.
+//provideZoneChangeDetection(): Configura a detecção de mudanças baseada em zonas, entre outros.
+
+//Esses módulos precisam ser configurados uma única vez na aplicação, porque são serviços globais. Quando você coloca esses providers no app.config.ts, você está garantindo que esses serviços sejam usados em toda a aplicação, independentemente de qual componente esteja sendo renderizado.
+
+//Já os módulos como FormsModule ou ReactiveFormsModule são mais localizados, ou seja, você os importa apenas nos componentes que realmente vão usá-los.
+
+// Serviços globais (como HttpClient, Animations, Router): Configurados no app.config.ts, porque você quer que esses serviços estejam disponíveis globalmente para a aplicação toda.
+
+// Serviços ou módulos específicos (como FormsModule ou ReactiveFormsModule): Devem ser configurados no componente que vai utilizá-los, porque são dependências específicas para aquele componente.
+
+Observables
+
+
+	- É uma funcionalidade do RxJs que é utilizada pelo Angular
+	- Com ele podemos lidar com transferencia sincrona e assincrona de dados
+Diferente de uma promise, um observable pode ser uma fonta continua de dados, que poderá emitir dados mais de uma vez em diferentes momentos.
