@@ -88,3 +88,105 @@ Java	TypeScript / Angular
 Atributo + atribuição manual	this.param = param;
 Verbosidade maior	Mais conciso com private no param
 Sem atalho no construtor	Usa parameter properties
+
+
+Detalhe sobre Observables
+
+- Quando temos um subscribe como 
+
+  getWhwaterDatas(cityName: string): void{
+    this.weatherService.getWeatherDatas(cityName)
+    .subscribe({
+      next: (response) => {
+        console.log(response);
+        response && (this.weatherDatas = response);
+      },
+      error: (error) => console.log(error),
+    })
+  }
+
+  Estaremos sempre escutando as alterações, mesmo em outras páginas da aplicação, o que torna-se em um MemoryLeak (vazamento de memória), sendo assim é uma boa prática usar o parametro readonly destroy, usando OnDestroy
+
+---
+
+## ✅ O que está sendo feito?
+
+Você está fazendo uma requisição assíncrona com `RxJS` (`this.weatherService.getWeatherDatas`) e se preocupando com **memory leak** ao destruir o componente. Isso é **boa prática Angular**.
+
+---
+
+## 🧠 O papel do `OnDestroy`
+
+Ao implementar `OnDestroy`, você está dizendo ao Angular:
+
+> "Quando esse componente for destruído (por exemplo, ao navegar para outra rota), eu quero executar algum código de limpeza."
+
+### Exemplo prático:
+
+Se você não cancelar uma `subscription` (assinatura do RxJS), ela continua viva mesmo **depois que o componente saiu da tela**, o que:
+
+* Gasta memória desnecessariamente.
+* Pode continuar recebendo dados que ninguém mais usa.
+* Pode causar **comportamentos indesejados e vazamentos de memória** (memory leaks).
+
+---
+
+## 🔄 O que é o `destroy$`?
+
+```ts
+private readonly destroy$: Subject<void> = new Subject();
+```
+
+* É um **notificador manual** para dizer: "agora pode se desinscrever de tudo".
+* Ele é usado com `takeUntil` para **automaticamente encerrar as subscriptions** quando esse `Subject` emitir um valor.
+
+---
+
+## 📛 Por que `readonly`?
+
+O modificador `readonly` aqui garante que:
+
+* A variável `destroy$` **não será reatribuída**.
+* Você pode chamar métodos (`.next()`, `.complete()`), mas **não pode substituir o objeto por outro**.
+
+Isso é útil para manter **imutabilidade de referência** – uma boa prática para recursos que **não devem ser reatribuídos** (como Observables de controle).
+
+---
+
+## 🔄 Como o `takeUntil` ajuda?
+
+Este trecho:
+
+```ts
+.pipe(takeUntil(this.destroy$))
+```
+
+Significa:
+
+> "Fique inscrito nesse Observable **até** que `destroy$` emita um valor".
+
+E quando isso acontece?
+
+```ts
+ngOnDestroy(): void {
+  this.destroy$.next();     // notifica que é hora de cancelar
+  this.destroy$.complete(); // encerra o Subject
+}
+```
+
+Então, **qualquer Observable com `takeUntil(this.destroy$)` será cancelado** automaticamente, evitando vazamento de memória.
+
+---
+
+## 💡 Resumo visual:
+
+| Elemento              | Função                                                                |
+| --------------------- | --------------------------------------------------------------------- |
+| `OnDestroy`           | Permite limpar recursos quando o componente é destruído               |
+| `destroy$`            | Observable usado para controlar o cancelamento de subscriptions       |
+| `readonly`            | Garante que `destroy$` nunca será reatribuído (só usado, não trocado) |
+| `takeUntil(destroy$)` | Cancela a subscription quando o componente for destruído              |
+
+---
+
+Se quiser, posso te mostrar um exemplo de **memory leak sem esse padrão** e como ele pode afetar sua aplicação. Deseja isso?
